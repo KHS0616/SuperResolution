@@ -123,3 +123,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# 사용자 임의 추가
+InputImage
+OutputImage
+TrainImage
