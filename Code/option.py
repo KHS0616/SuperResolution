@@ -25,7 +25,7 @@ parser.add_argument("--load_model_name", type=str, default=None, help="model fil
 # 하드웨어 관련 설정
 parser.add_argument("--pin_memory", type=bool, default=True, help="GPU train or test speed up")
 parser.add_argument("--n_threads", type=int, default=6, help="number of threads for data loading")
-parser.add_argument('--n_GPUs', type=int, default=2, help='number of GPUs')
+parser.add_argument('--n_GPUs', type=int, default=1, help='number of GPUs')
 
 # 학습 관련 설정
 # type - 학습인지 테스트인지 구분한다.

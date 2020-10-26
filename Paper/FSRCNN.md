@@ -22,4 +22,4 @@ SRCNN은 LR(Low Resolution) 이미지와 HR(High Resolution) 이미지간 매핑
 ![SRCNN 비 선형 매핑의 문제점](../static/FSRCNN-NonLinearMapping.png "SRCNN 비 선형 매핑의 문제점") 
 
 SRCNN은 LR의 특징에 대해 HR 특징과 복잡한 매핑이 이루어집니다.  
-이러한 이유로 계산복잡도가 기하급수적으로 증가하게 되며 이것은 속도의 저하로 연결됩니다.  
+이러한 이유로 계산복잡도가 기하급수적으로 증가하게 되며 이것은 속도의 저하로 연결됩니다.
