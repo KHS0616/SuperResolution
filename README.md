@@ -14,7 +14,7 @@ FSRCNN은 SRCNN을 가속한 네트워크 입니다.
 가장 큰 장점은 SRCNN의 정확도를 유지하면서 속도를 최대 40배 가속이 된다는 점입니다.
 
 ## EDSR
-![FSRCNN](static/FSRCNN.png "FSRCNN 네트워크 구조")  
+![EDSR](static/EDSR.png "EDSR 네트워크 구조")  
 | 유형 | 링크 |
 |---|:---:|
 | 원본 논문 | [Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/pdf/1707.02921.pdf) |

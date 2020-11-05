@@ -73,3 +73,25 @@ X2, X3은 Conv, Shuffle 한 번, X4는 두 번 통과하며 각각 내부 파라
 
 Convolutional 층에서 업 스케일링 요소의 제곱 배 만큼 이미지를 확장하여 PixelShuffle을 통해 적절히 재배치 합니다.  
 이 과정을 통해 VDSR이 사용한 Bicubic Interpolation보다 효율적인 연산이 가능하고 정확도 또한 높아졌습니다.  
+
+**EDSR 활성화함수 손실함수**  
+![EDSR 활성화함수](../static/EDSR-ActivationFunction.png "EDSR 활성화함수")  
+이전까지는 EDSR 네트워크의 전체적인 구조를 살펴봤으면 이번에는 EDSR의 세부 정보를 살펴보려고 합니다.  
+EDSR은 최적화 함수(Optimizer)로 Adam을 선정했습니다.  
+Adam은 Momentum과 AdaGrad 섞은 기법입니다.  
+Momentum은 학습이 진행됨에 따라 기울기가 업데이트 되는 폭을 조절을 하는 방식입니다.  
+AdaGrad는 과거의 기울기의 값을 계속해서 제곱해서 더하면서 학습을 진행하는 방식입니다.  
+
+손실 함수(Cost Function)은 MSE(평균 제곱 오차)를 사용합니다.  
+
+활성화 함수는 ReLU 함수를 사용하였고, 이에 따라 초기화 방식은 He초기화 방식을 사용하였습니다.   
+
+## 다양한 업스케일링에 대한 EDSR -> MDSR 전체 네트워크 구조  
+![EDSR MDSR](../static/EDSR-Mdsr.png "EDSR MDSR")  
+MDSR과 EDSR의 차이점은 업 스케일링 파라미터에 따른 ResBlock을 기존 Pre-processing 단계와 ResBlock 단계 사이에 추가되는 점과 업 스케일링 파라미터에 따라 기존 업 스케일링 부분을 병렬처리 하는 점입니다.  
+즉, Pre-processing 단계에 ResBlock들이 추가됩니다.  
+추가되는 ResBlock의 필터의 크기는 5*5 입니다.  
+모델 초기에 필터의 크기를 크게 만들어서 특정 스케일에 대하여 얇게 유지할 수 있도록 합니다.  
+
+MDSR의 Feature Map, 필터의 크기는 64, ResBlock의 개수는 80개로 설정합니다.
+EDSR의 계산 복잡도는 초기 제안된 multi-scale model에 비해 5배 깊은데 비해 2.5배 밖에 차이가 안 납니다.  
