@@ -1,58 +1,55 @@
-"""
-데이터를 관리하는 최상위 파일
-"""
+""" 데이터 셋 모듈 """
 
-# importlib.import_module - 코드 내부에서 모듈을 가져오는 모듈
-# os.listdir 지정된 경로에 있는 파일들을 리스트로 관라하기 위한 모듈
 from importlib import import_module
-from os import listdir
+from torch.utils.data import DataLoader
 
-# 파이토치
-from torch.utils.data import dataloader
-from torch.utils.data import ConcatDataset
+def createDataset(module_name, opt):
+    """ 데이터 셋 생성 함수 """
+    # 데이터 셋으로 부터 데이터 로더를 생성
+    data_loader = CustomDatasetDataLoader(module_name, opt)
 
-# Data 클래스
-class Data():
-    def __init__(self, args):
-        # 파서를 통해 정보를 변수에 저장
-        # data_type - 데이터의 유형(폴더, 비디오 등등)
-        # *_batch_size - 각각의 배치사이즈
-        # pin_memory - ??
-        # n_threads - 데이터를 로드할 때 사용하는 스레드 개수
-        self.data_type = args.data_type
-        self.type = args.type
-        self.train_batch_size = args.train_batch_size
-        self.test_batch_size = args.test_batch_size
-        self.pin_memory = args.pin_memory
-        self.n_threads = args.n_threads        
+    # 데이터 로더로 부터 가공된 데이터 셋을 불러온다.
+    dataset = data_loader.load_data()
 
-        # 데이터의 유형에 맞는 Dataset 가져오기
-        # 학습하는 상황에서는 학습 및 평가 데이터 셋을 저장한다.
-        # 테스트하는 상황에서는 테스트 데이터 셋을 저장한다.
-        m = import_module('data.' + self.data_type.lower())
-        if self.type == "Train":
-            dataset = getattr(m, "TrainDataset")(args)
-            self.loader = dataloader.DataLoader(
-                dataset=dataset,
-                batch_size=self.train_batch_size,
-                shuffle=False,
-                pin_memory=self.pin_memory,
-                num_workers=self.n_threads
-            )
-            eval_dataset = getattr(m, "EvalDataset")(args)
-            self.eval_loader = dataloader.DataLoader(
-                dataset=eval_dataset,
-                batch_size=self.test_batch_size,
-                shuffle=False,
-                pin_memory=self.pin_memory,
-                num_workers=self.n_threads
-            )
-        elif self.type == "Test":
-            dataset = getattr(m, "TestDataset")(args)
-            self.loader = dataloader.DataLoader(
-                dataset=dataset,
-                batch_size=self.test_batch_size,
-                shuffle=False,
-                pin_memory=self.pin_memory,
-                num_workers=self.n_threads
-            )
+    # 데이터 셋 반환
+    return dataset
+
+# 사용자 정의 데이터 셋을 만드는 데이터 로더
+class CustomDatasetDataLoader():
+    def __init__(self, model_name, opt):
+        # 파서 옵션 불러와서 저장
+        self.opt = opt
+
+        # 해당되는 모듈 불러오기
+        module = import_module("data." + model_name + "Dataset")
+
+        # 데이터 셋 객체 생성
+        self.dataset = getattr(module, opt.mode + "Dataset")(opt)
+        print("데이터 셋 - [%s] 이 생성되었습니다." % type(self.dataset).__name__)
+
+        # 데이터 로더 생성
+        # 파이토치 DataLoader 모듈 이용
+        # opt.batch_size - 배치 사이즈
+        # opt.serial_batches - 활성화 하면 데이터를 순차적으로 처리
+        # num_workers - 학습에 사용될 스레드 할당
+        self.dataloader = DataLoader(
+            self.dataset,
+            batch_size=opt.batch_size,
+            shuffle=opt.shuffle,
+            pin_memory=opt.pin_memory,
+            num_workers=opt.n_threads)
+
+    def load_data(self):
+        return self
+
+    def __len__(self):
+        """데이터 셋의 길이를 반환한다."""
+        # max_dataset_size - 실제 데이터 셋의 길이의 한계 값을 설정
+        return min(len(self.dataset), self.opt.max_dataset_size)
+
+    def __iter__(self):
+        """ 데이터 셋에서 배치사이즈에 따라 하나씩 분배 """
+        for i, data in enumerate(self.dataloader):
+            if i * self.opt.batch_size >= self.opt.max_dataset_size:
+                break
+            yield data

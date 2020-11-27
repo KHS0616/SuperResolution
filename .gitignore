@@ -128,3 +128,5 @@ dmypy.json
 InputImage
 OutputImage
 TrainImage
+datasets
+*.txt
