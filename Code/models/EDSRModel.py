@@ -5,6 +5,8 @@ SRResNet, VDSR을 개선
 ResBlock 내부는 conv, relu로 구성되있고 총 32개 존재
 각각의 ResBlock간 스킵 커넥션이 이루어진다.
 네트워크 마지막에는 PixelShuffle을 이용한 업 스케일링 수행
+
+원본 코드 출처 : https://github.com/thstkdgus35/EDSR-PyTorch
 """
 from models.BaseModel import BaseModel
 import torch.nn as nn

@@ -18,6 +18,8 @@ FSRCNN
 그 사이에 같은 필터크기의 여러 레이어를 추가 -> 모래시계 모양
 기존성능을 우수하며 속도는 향상된다.
 크기가 다른 업 스케일링 요소여도 Deconvolution만 교체하면된다.
+
+원본 코드 출처 : https://github.com/yjn870/FSRCNN-pytorch
 """
 # math - 수학 연산을 위한 모듈
 from models.BaseModel import BaseModel

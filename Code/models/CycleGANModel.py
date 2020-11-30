@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*- 
+"""
+CycleGAN 네트워크 모듈
+
+원본 코드 출처 : https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+"""
 import torch
 import itertools
 from models.BaseModel import BaseModel
